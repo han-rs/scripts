@@ -11,7 +11,8 @@ set -x
 SETUP_RUST_TOOLCHAIN=${SETUP_RUST_TOOLCHAIN:-"nightly"}
 SETUP_RUST_PROFILE=${SETUP_RUST_PROFILE:-"minimal"}
 RUSTUP_INIT_SH="https://sh.rustup.rs"
-CARGO_CONFIG="""[net]
+CARGO_CONFIG="""
+[net]
 git-fetch-with-cli = true
 """
 
@@ -110,10 +111,10 @@ if [[ ! -d "$CACHE_DIR/cargo" || ! -d "$CACHE_DIR/rustup" ]]; then
   fi
 
   if [[ -d "$HOME/.cargo" && -d "$HOME/.rustup" ]]; then
-    echo $CARGO_CONFIG > $HOME/.cargo/config.toml
+    echo "$CARGO_CONFIG" > $HOME/.cargo/config.toml
 
     if [ "$ENABLE_PROXY" = true ]; then
-      echo $CARGO_CONFIG_RSPROXY >> $HOME/.cargo/config.toml
+      echo "$CARGO_CONFIG_RSPROXY" >> $HOME/.cargo/config.toml
     fi
 
     mkdir -p $CACHE_DIR/cargo
