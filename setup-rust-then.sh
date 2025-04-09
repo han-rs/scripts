@@ -37,6 +37,9 @@ CLEAR_CACHE_DIR=false
 # Other tools
 SETUP_MDBOOK=${SETUP_MDBOOK:-""}
 
+# Custom command
+CUSTOM_CMD=""
+
 while [[ $# -gt 0 ]]; do
   case $1 in
     --rust-toolchain)
@@ -62,6 +65,10 @@ while [[ $# -gt 0 ]]; do
     --clear-cache)
       CLEAR_CACHE_DIR=true
       shift
+      ;;
+    --execute-command)
+      CUSTOM_CMD="$2"
+      shift 2
       ;;
     *)
       echo "Unknown arg: $1"
@@ -126,14 +133,7 @@ else
   chown -R $(whoami):$(whoami) "$HOME/.rustup"
 fi
 
-case ":${PATH}:" in
-    *:"$CACHE_DIR/cargo/bin":*)
-        ;;
-    *)
-        # Prepending path in case a system-installed rustc needs to be overridden
-        export PATH="$CACHE_DIR/cargo/bin:$PATH"
-        ;;
-esac
+. "$HOME/.cargo/env"
 
 # Set default Rust toolchain
 rustup default $SETUP_RUST_TOOLCHAIN
@@ -183,4 +183,9 @@ rustup --version || { echo "Failed to get rustup version"; exit 1; }
 if [ -n "$SETUP_MDBOOK" ]; then
   echo -n "mdBook: "
   mdbook --version || { echo "Failed to get mdbook version"; exit 1; }
+fi
+
+# Execute custom command if specified
+if [ -n "$CUSTOM_CMD" ]; then
+  eval "$CUSTOM_CMD"
 fi
