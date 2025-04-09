@@ -189,4 +189,8 @@ fi
 # Execute custom command if specified
 if [ -n "$CUSTOM_CMD" ]; then
   eval "$CUSTOM_CMD"
+
+  # Write back
+  cp -r "$HOME/.cargo"/* "$CACHE_DIR/cargo/" || { echo "Failed to cache cargo dir"; exit 1; }
+  cp -r "$HOME/.rustup"/* "$CACHE_DIR/rustup/" || { echo "Failed to cache rustup files"; exit 1; }
 fi
